@@ -57,7 +57,11 @@ void print_matrix(int** mat, int n){
     return;
 }
 
-void destroy_matrix(int** main){
+void destroy_matrix(int** mat, int n){
+    for (int i = 0; i<n; i++){
+        delete[] mat[i];
+    }
+    delete[] mat;
     return;
 }
 
@@ -67,5 +71,6 @@ int main(){
     cin >> n;
     int** mat = matrix(n);
     print_matrix(mat, n);
+    destroy_matrix(mat, n);
     return 0;
 }
