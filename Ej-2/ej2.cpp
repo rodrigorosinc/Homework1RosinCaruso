@@ -39,8 +39,8 @@ iv.
     requerida y que además demuestre que puede capturar un error en runtime, 
     crear una entrada en el log y después detener la ejecución del programa y salir 
     del mismo con un código de error (return 1).  
-
 */
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -53,15 +53,18 @@ enum Priority{
     WARNING = 3,
     ERROR = 4,
     CRITICAL = 5,
-    SECURITY = 6
+    SECURITY = 6,
+    OTHER = 7
 };
+
+//Preguntar por los macros __FILE__ y __LINE__, el getline y el .ignore().
 
 void logMessage(string msg, int priority){
     string priority_str;
     ofstream file;
     file.open("log.txt", ios::app);
     if (!file.is_open()){
-        cout << "Error al abrir el archivo" << endl;
+        cout << "Error while opening file" << endl;
         return;
     }
     switch (priority){
@@ -82,24 +85,23 @@ void logMessage(string msg, int priority){
             break;
         case SECURITY:
             priority_str = "[SECURITY]";
-
             break;
-        default: 
-            priority_str = "[UNKNOWN]";
+        case OTHER:
+            priority_str = "[OTHER]";
             break;
     }
     file << priority_str << " " << msg << endl;
     file.close();
 }
 
-void logMessage(string Mensage_de_Error, string Archivo, int Línea_de_Código){
+void logMessage(string errorMsg, string givenFile, int line){
     ofstream file;
     file.open("log.txt", ios::app);
     if (!file.is_open()){
-        cout << "Error al abrir el archivo" << endl;
+        cout << "Error while opening file" << endl;
         return;
     }
-    file << "[ERROR] " << Mensage_de_Error << " en el archivo " << Archivo << " en la linea " << Línea_de_Código << endl;
+    file << "[ERROR] " << errorMsg << " in file " << givenFile << " in line " << line << endl;
     file.close();
 }
 
@@ -110,50 +112,55 @@ bool check_user(string user){
     return false;
 }
 
-void logMessage(string accecsMsg, string userName){
+void logMessage(string accesMsg, string userName){
     ofstream file;
     file.open("log.txt", ios::app);
     if (!file.is_open()){
-        cout << "Error al abrir el archivo" << endl;
+        cout << "Error while opening file" << endl;
         return;
     }
     if (check_user(userName)){
-        file << "[SECURITY] " << accecsMsg << " for " << userName << endl;
+        file << "[SECURITY] " << accesMsg << " for " << userName << endl;
     }else{
-        file << "[SECURITY] Acces Denied for " << userName << " (Access Denied)" << endl;
+        file << "[SECURITY] Acces Denied for " << userName << endl;
     }
     file.close();
 }
 
-
 int main(){
-    string msg;
-    int priority;
-    cout << "Ingrese la prioridad (DEBUG(1), INFO(2), WARNING(3), ERROR(4), CRITICAL(5), SECURITY(6)): ";
+    try {
+    string msg; int priority;
+    cout << "Input priority (DEBUG(1), INFO(2), WARNING(3), ERROR(4), CRITICAL(5), SECURITY(6), OTHER(7)): ";
     cin >> priority;
     if (priority == 4){
         string errorMsg, file;
         int line;
-        cout << "Ingrese el mensaje de error: ";
+        cout << "Input error name: ";
         cin.ignore(); // Para limpiar el buffer (el "cin >> priority" deja un '\n' en el buffer)
-        getline(cin, errorMsg);
-        cout << "Ingrese el nombre del archivo: ";
+        getline(cin, errorMsg); 
+        cout << "Input file name: ";
         cin >> file;
-        cout << "Ingrese la linea de codigo: ";
+        cout << "At line: ";
         cin >> line;
         logMessage(errorMsg, file, line);
         return 0;
-    }
-    if (priority == 6){
+    } else if (priority == 6){
         string user;
-        cout << "Ingrese el nombre de usuario: ";
+        cout << "Input user name: ";
         cin >> user;
         logMessage("Access Granted", user);
         return 0;
+    } else if (priority > 7){
+        runtime_error("Invalid priority");
+        return 1;
     }
-    cout << "Ingrese el mensaje: ";
+    cout << "Input msg: ";
     cin.ignore(); // Para limpiar el buffer (el "cin >> priority" deja un '\n' en el buffer)
     getline(cin, msg);
     logMessage(msg, priority);
+    } catch (runtime_error &e){
+        logMessage(e.what(), __FILE__, __LINE__);
+        return 1;
+    }
     return 0;
 }
