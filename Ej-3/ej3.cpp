@@ -28,17 +28,17 @@ vi.
 using namespace std;
 
 struct Node{
-    shared_ptr<void> value; 
+    int value; 
     shared_ptr<Node> next;
 };
 
-struct List{
+typedef struct List{
     shared_ptr<Node> head;
     shared_ptr<Node> tail;
     int size;
-};
+} list_t;
 
-shared_ptr<Node> create_node(shared_ptr<void> value){
+shared_ptr<Node> create_node(int value){
     auto new_node = make_shared<Node>();
     if (new_node == nullptr) return nullptr;
     new_node->value = value;
@@ -46,14 +46,14 @@ shared_ptr<Node> create_node(shared_ptr<void> value){
     return new_node;
 }
 
-void push_front(shared_ptr<Node> node, shared_ptr<List> list){
+void push_front(shared_ptr<Node> node, shared_ptr<list_t> list){
     node->next = list->head;
     list->head = node;
     if (list->size == 0) list->tail = node;
     list->size++; 
 }
 
-void push_back(shared_ptr<Node> node, shared_ptr<List> list){
+void push_back(shared_ptr<Node> node, shared_ptr<list_t> list){
     if (list->size == 0) {
         list->head = node;
         list->tail = node;
@@ -64,7 +64,7 @@ void push_back(shared_ptr<Node> node, shared_ptr<List> list){
     list->size++;
 }
 
-void insert(shared_ptr<Node> node,shared_ptr<List> list, int position){
+void insert(shared_ptr<Node> node, shared_ptr<list_t> list, int position){
     if (position <= 0 || list->size == 0){
         push_front(node, list);
         return;
@@ -83,7 +83,7 @@ void insert(shared_ptr<Node> node,shared_ptr<List> list, int position){
     list->size++;
 }
 
-void erase(shared_ptr<List> list, int position){
+void erase(shared_ptr<list_t> list, int position){
     if (list->size == 0) return;
     
     if (list->size == 1){
@@ -116,40 +116,38 @@ void erase(shared_ptr<List> list, int position){
     list->size--;
 }
 
-void print_list(shared_ptr<List> list) {
+void print_list(shared_ptr<list_t> list) {
     auto curr_node = list->head;
     while (curr_node) {
-        cout << *static_pointer_cast<int>(curr_node->value) << " -> ";
+        cout << curr_node->value << " -> ";
         curr_node = curr_node->next;
     }
     cout << "nullptr" << endl;
 }
 
 int main(){
-    auto list = make_shared<List>();
+    auto list = make_shared<list_t>();
     list->head = nullptr;
     list->tail = nullptr;
     list->size = 0;
-    int amount = 23;
-    int insert_position = 10;
-    for (int i = 0; i < amount; i++){
-        auto node = create_node(make_shared<int>(i));
+
+    int node_ammount = 15;
+    int pos_insert = 4;
+    for (int i = 0; i<node_ammount; i++){
+        auto node = create_node(i);
         push_back(node, list);
     }
-    print_list(list);
-    for (int i = 0; i < amount; i++){
-        auto node = create_node(make_shared<int>(i));
+    for (int i = 0; i<node_ammount; i++){
+        auto node = create_node(i);
         push_front(node, list);
     }
-    print_list(list);
-    for (int i = 0; i < amount; i++){
-        auto node = create_node(make_shared<int>(i));
-        insert(node, list, insert_position);
+    for (int i = 0; i<node_ammount; i++){
+        auto node = create_node(i);
+        insert(node, list, pos_insert);
+    }
+    for (int i = 0; i<list->size; i++){
+        erase(list, i);
     }
     print_list(list);
-    for (int i = 0; i < amount; i++){
-        erase(list, insert_position);
-    }
-    print_list(list);
-    return 0;
+
 }
