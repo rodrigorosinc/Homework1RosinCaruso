@@ -40,33 +40,56 @@ bool compareText(const char* text1, const char* text2){
     return compareText(text1+1, text2+1);
 }
 
-constexpr bool compareTextComp(const char* text1, const char* text2){
+constexpr bool compareTextCompiled(const char* text1, const char* text2){
     if (text1[0] == '\0' && text2[0] == '\0'){
         return true;
     }
     if (text1[0] != text2[0]){
         return false;
     }
-    return compareTextComp(text1+1, text2+1);
+    return compareTextCompiled(text1+1, text2+1);
 }
 
+bool compareTextString(const std::string text1, const std::string text2){
+    if (text1[0] == '\0' && text2[0] == '\0'){
+        return true;
+    }
+    if (text1[0] != text2[0]){
+        return false;
+    }
+    return compareTextString(text1.substr(1), text2.substr(1));
+}
 
 int main(){
-    char text1[] = "This is a very very VERY VERY LONG LONG text to compare, of at least 64 characters";
-    char text2[] = "This is a very very VERY VERY LONG LONG text to compare, of at least 64 characters";
+    // Creo los textos
+    const char* text1 = "This is a very very VERY long long text to compare, to see if the function works correctly";
+    const char* text2 = "This is a very very VERY long long text to compare, to see if the function works correctly";
+    // Comparo los textos
     auto startTime = std::chrono::high_resolution_clock::now();
+    bool result = compareText(text1, text2);
     auto endTime = std::chrono::high_resolution_clock::now();
     auto elapsedTime = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
-    bool areEqual = compareText(text1, text2);
-    std::cout << "The process took: " << elapsedTime.count() << " nanoseconds" << std::endl;
-    std::cout << "The texts are equal: " << areEqual << std::endl;
-    std::cout << "-------------------------------------------" << std::endl;
-    auto startTimeComp = std::chrono::high_resolution_clock::now();
-    auto endTimeComp = std::chrono::high_resolution_clock::now();
-    auto elapsedTimeComp = std::chrono::duration_cast<std::chrono::nanoseconds>(endTimeComp - startTimeComp);
-    bool areEqualComp = compareTextComp(text1, text2);
-    std::cout << "The process, when compared in compilation time, took: " << elapsedTimeComp.count() << " nanoseconds" << std::endl;
-    std::cout << "The texts are equal: " << areEqualComp << std::endl;
+    std::cout << "The function took: " << elapsedTime.count() << " nanoseconds" << std::endl;
+    std::cout << "The texts are equal: " << result << std::endl;
+
+    // Comparo los textos en tiempo de compilación
+    auto startTimeCompiled = std::chrono::high_resolution_clock::now();
+    bool resultCompiled = compareTextCompiled(text1, text2);
+    auto endTimeCompiled = std::chrono::high_resolution_clock::now();
+    auto elapsedTimeCompiled = std::chrono::duration_cast<std::chrono::nanoseconds>(endTimeCompiled - startTimeCompiled);
+    std::cout << "The function took: " << elapsedTimeCompiled.count() << " nanoseconds" << std::endl;
+    std::cout << "The texts are equal: " << resultCompiled << std::endl;
+
+    // Comparo usando string
+    std::string text3 = "This is a very very VERY long long text to compare, to see if the function works correctly";
+    std::string text4 = "This is a very very VERY long long text to compare, to see if the function works correctly";
+    auto startTimeString = std::chrono::high_resolution_clock::now();
+    bool resultString = compareTextString(text3, text4);
+    auto endTimeString = std::chrono::high_resolution_clock::now();
+    auto elapsedTimeString = std::chrono::duration_cast<std::chrono::nanoseconds>(endTimeString - startTimeString);
+    std::cout << "The function took: " << elapsedTimeString.count() << " nanoseconds" << std::endl;
+    std::cout << "The texts are equal: " << resultString << std::endl;
+
     return 0;
 }
 // Cuando el texto se compara en tiempo de compilación, el tiempo de ejecución es mucho menor
@@ -76,4 +99,5 @@ int main(){
 // de compilación es de aproximadamente 60 nanosegundos.
 
 // Elegí el tipo de variable char* ya que es más sencillo a la hora de comparar los textos, ya que
-// se puede acceder a los caracteres de forma más sencilla que con un string.
+// se puede acceder a los caracteres de forma más sencilla que con un string. Además, el tipo de
+// char* 

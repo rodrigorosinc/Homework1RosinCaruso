@@ -1,53 +1,10 @@
-/*
-2. En muchos sistemas, es importante registrar todo lo que sucede mientras están en 
-funcionamiento. Para ello, se utiliza un sistema de log que almacena los eventos 
-relevantes. Cada evento recibe una etiqueta que indica su nivel de importancia o 
-gravedad. Las etiquetas más comunes son: DEBUG, INFO, WARNING, ERROR y 
-CRITICAL. 
-a. En este ejercicio, se pide crear un sistema log que permite agregar entradas a un 
-archivo mediante el llamado a una función logMessage definida en pseudo código de 
-la siguiente manera: 
- 
-void logMessage(String mensaje, Integer/Otro NivelSeveridad) 
- 
-Donde NivelSeveridad corresponderá con unas de las leyendas previamente 
-mencionadas. El formato esperado en una línea del archivo de log es el siguiente: 
-Homework #1  
-I102 – Paradigmas de Programación 
-[ERROR] <Mensaje> 
-[INFO] <Mensaje> 
-etc. 
-Verifique su funcionamiento con al menos una entrada de cada tipo. 
-b. En un proyecto usualmente se solicitan cambios para mejorar o agregar funcionalidad. 
-Para el caso del código del ejercicio 2.a, se requiere tener la habilidad de agregar 
-mensajes personalizados para registrar otro tipo de eventos. Los requisitos son los 
-siguientes: 
-i. 
-    Todos los nuevos mensajes deben ser invocados con logMessage. 
-ii. 
-    Se requiere la posibilidad de registrar errores, indicando el mensaje de error, el 
-    archivo y la línea de código donde sucedió este error, es decir: 
-    logMessage(String Mensage_de_Error, String Archivo, Int Línea_de_Código) 
-iii. 
-    Se requiere la posibilidad de registrar un mensaje de “Acceso de Usuario” a la 
-    aplicación. Este mensaje debe tener una leyenda nueva: [SECURITY]. La misma 
-    debe ser ingresada de la siguiente manera: 
-    logMessage(String Mensaje_De_Acceso, String Nombre_de_Usuario) 
-    Los mensajes de acceso pueden ser: Access Granted, Access Denied, etc. 
-iv. 
-    Se requiere un código que pruebe que el sistema verifica la funcionalidad 
-    requerida y que además demuestre que puede capturar un error en runtime, 
-    crear una entrada en el log y después detener la ejecución del programa y salir 
-    del mismo con un código de error (return 1).  
-*/
-
 #include <iostream>
 #include <string>
 #include <fstream>
 
 using namespace std;
 
-enum Priority{
+enum Priority{ //enumeracion para los niveles de prioridad
     DEBUG = 1,
     INFO = 2,
     WARNING = 3,
@@ -57,17 +14,15 @@ enum Priority{
     OTHER = 7
 };
 
-//Preguntar por los macros __FILE__ y __LINE__, el getline y el .ignore().
-
-void logMessage(string msg, int priority){
+void logMessage(string msg, int priority){ //funcion para loggear mensajes
     string priority_str;
     ofstream file;
-    file.open("log.txt", ios::app);
+    file.open("log.txt", ios::app); 
     if (!file.is_open()){
-        cout << "Error while opening file" << endl;
+        cout << "Error while opening file" << endl; //si no se pudo abrir el archivo, imprimir mensaje de error
         return;
     }
-    switch (priority){
+    switch (priority){ //switch para asignar la prioridad
         case DEBUG:
             priority_str = "[DEBUG]";
             break;
@@ -90,36 +45,36 @@ void logMessage(string msg, int priority){
             priority_str = "[OTHER]";
             break;
     }
-    file << priority_str << " " << msg << endl;
-    file.close();
+    file << priority_str << " " << msg << endl; //escribir en el archivo
+    file.close(); //cerrar el archivo
 }
 
-void logMessage(string errorMsg, string givenFile, int line){
+void logMessage(string errorMsg, string givenFile, int line){ //funcion para loggear errores
     ofstream file;
-    file.open("log.txt", ios::app);
+    file.open("log.txt", ios::app); 
     if (!file.is_open()){
         cout << "Error while opening file" << endl;
         return;
     }
-    file << "[ERROR] " << errorMsg << " in file " << givenFile << " in line " << line << endl;
+    file << "[ERROR] " << errorMsg << " in file " << givenFile << " in line " << line << endl; //escribir en el archivo
     file.close();
 }
 
-bool check_user(string user){
+bool check_user(string user){ //funcion para verificar el user para el security
     if (user == "admin"){
         return true;
     }
     return false;
 }
 
-void logMessage(string accesMsg, string userName){
+void logMessage(string accesMsg, string userName){ //funcion para loggear mensajes de seguridad
     ofstream file;
     file.open("log.txt", ios::app);
     if (!file.is_open()){
         cout << "Error while opening file" << endl;
         return;
     }
-    if (check_user(userName)){
+    if (check_user(userName)){ //verificar el user
         file << "[SECURITY] " << accesMsg << " for " << userName << endl;
     }else{
         file << "[SECURITY] Acces Denied for " << userName << endl;
@@ -129,36 +84,66 @@ void logMessage(string accesMsg, string userName){
 
 int main(){
     try {
+    // Ejemplo de uso:
+    bool showExamples; 
+    // Pregunto si quiero cargar los ejemplos hardcodeados
+    cout << "Load hardcoded examples? (1 for yes, 0 for no): ";
+    cin >> showExamples;
+    cin.ignore(); //para limpiar el buffer (el "cin >> showExamples" deja un '\n' en el buffer)
+    if (showExamples){
+    logMessage("This is a debug message", DEBUG);
+    logMessage("This is an info message", INFO);
+    logMessage("This is a warning message", WARNING);
+    logMessage("This is an error message", ERROR);
+    logMessage("Runtime error", __FILE__, __LINE__);
+    logMessage("This is a critical message", CRITICAL);
+    logMessage("This is a security message", SECURITY);
+    logMessage("Acces granted", "admin");
+    logMessage("This is an other message", OTHER);
+    }
+
     string msg; int priority;
-    cout << "Input priority (DEBUG(1), INFO(2), WARNING(3), ERROR(4), CRITICAL(5), SECURITY(6), OTHER(7)): ";
+    // Pido la prioridad
+    cout << "Input priority (DEBUG(1), INFO(2), WARNING(3), ERROR(4), CRITICAL(5), SECURITY(6), OTHER(7)): "; 
     cin >> priority;
-    if (priority == 4){
+    if (priority == 4){ //si la prioridad es 4, pido el mensaje de error, el archivo y la linea
         string errorMsg, file;
         int line;
-        cout << "Input error name: ";
-        cin.ignore(); // Para limpiar el buffer (el "cin >> priority" deja un '\n' en el buffer)
-        getline(cin, errorMsg); 
-        cout << "Input file name: ";
+        cout << "Input error msg: ";
+        cin.ignore(); //limpiar el buffer
+        getline(cin, errorMsg);
+        cout << "Input file: ";
         cin >> file;
-        cout << "At line: ";
+        cout << "Input line: ";
         cin >> line;
         logMessage(errorMsg, file, line);
-        return 0;
-    } else if (priority == 6){
+    } else if (priority == 6){ //si la prioridad es 6, pido el mensaje de acceso y el user
         string user;
         cout << "Input user name: ";
         cin >> user;
+        cin.ignore();   //limpiar el buffer
         logMessage("Access Granted", user);
-        return 0;
-    } else if (priority > 7){
-        runtime_error("Invalid priority");
+    } else if (priority > 7){ //si la prioridad es mayor a 7, tiro un error
+        throw runtime_error("Invalid priority");
+        return 1;
+    } else { //si no, pido el mensaje
+        cout << "Input msg: ";
+        cin.ignore(); //limpiar el buffer
+        getline(cin, msg);
+        logMessage(msg, priority);
+    }
+
+    // Pregunto si quiero tirar un error
+    bool throwErr;
+    cin.ignore(); //limpiar el buffer
+    cout << "Throw error? (1 for yes, 0 for no): ";
+    cin >> throwErr;
+    if (throwErr){
+        throw runtime_error("Error thrown");
         return 1;
     }
-    cout << "Input msg: ";
-    cin.ignore(); // Para limpiar el buffer (el "cin >> priority" deja un '\n' en el buffer)
-    getline(cin, msg);
-    logMessage(msg, priority);
-    } catch (runtime_error &e){
+    
+    } catch (runtime_error &e){ //catch para los errores de donde sea que se tiren
         logMessage(e.what(), __FILE__, __LINE__);
         return 1;
     }
