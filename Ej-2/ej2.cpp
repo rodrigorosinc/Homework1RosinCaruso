@@ -4,7 +4,7 @@
 
 using namespace std;
 
-enum Priority{ //enumeracion para los niveles de prioridad
+enum Priority{ //enum para los niveles de prioridad
     DEBUG = 1,
     INFO = 2,
     WARNING = 3,
@@ -15,7 +15,7 @@ enum Priority{ //enumeracion para los niveles de prioridad
 };
 
 void logMessage(string msg, int priority){ //funcion para loggear mensajes
-    string priority_str;
+    string priority_str; 
     ofstream file;
     file.open("log.txt", ios::app); 
     if (!file.is_open()){
@@ -49,7 +49,7 @@ void logMessage(string msg, int priority){ //funcion para loggear mensajes
     file.close(); //cerrar el archivo
 }
 
-void logMessage(string errorMsg, string givenFile, int line){ //funcion para loggear errores
+void logMessage(string errorMsg, string givenFile, int line){ //funcion para loggear errores de forma mas especifica
     ofstream file;
     file.open("log.txt", ios::app); 
     if (!file.is_open()){
@@ -60,7 +60,7 @@ void logMessage(string errorMsg, string givenFile, int line){ //funcion para log
     file.close();
 }
 
-bool check_user(string user){ //funcion para verificar el user para el security
+bool check_user(string user){ //funcion para verificar el user para el log de seguridad
     if (user == "admin"){
         return true;
     }
@@ -75,31 +75,30 @@ void logMessage(string accesMsg, string userName){ //funcion para loggear mensaj
         return;
     }
     if (check_user(userName)){ //verificar el user
-        file << "[SECURITY] " << accesMsg << " for " << userName << endl;
+        file << "[SECURITY] " << accesMsg << " for " << userName << endl; //si el acceso esta permitido lo escribe en el archivo
     }else{
-        file << "[SECURITY] Acces Denied for " << userName << endl;
+        file << "[SECURITY] Acces Denied for " << userName << endl;       //si no, escribe que el acceso fue denegado
     }
     file.close();
 }
 
-int main(){
+int main(){ // Ejemplo de uso:
     try {
-    // Ejemplo de uso:
-    bool showExamples; 
     // Pregunto si quiero cargar los ejemplos hardcodeados
+    bool showExamples; 
     cout << "Load hardcoded examples? (1 for yes, 0 for no): ";
     cin >> showExamples;
     cin.ignore(); //para limpiar el buffer (el "cin >> showExamples" deja un '\n' en el buffer)
     if (showExamples){
-    logMessage("This is a debug message", DEBUG);
-    logMessage("This is an info message", INFO);
-    logMessage("This is a warning message", WARNING);
-    logMessage("This is an error message", ERROR);
-    logMessage("Runtime error", __FILE__, __LINE__);
-    logMessage("This is a critical message", CRITICAL);
-    logMessage("This is a security message", SECURITY);
-    logMessage("Acces granted", "admin");
-    logMessage("This is an other message", OTHER);
+    logMessage("This is a debug message", DEBUG);       //logueo de mensaje de debug con logMessage
+    logMessage("This is an info message", INFO);        //logueo de mensaje de info con logMessage
+    logMessage("This is a warning message", WARNING);   //logueo de mensaje de warning con logMessage
+    logMessage("This is an error message", ERROR);      //logueo de error con logMessage
+    logMessage("Runtime error", __FILE__, __LINE__);    //logueo de error con el logMessage especifico para errores
+    logMessage("This is a critical message", CRITICAL); //logueo de mensaje critico con logMessage
+    logMessage("This is a security message", SECURITY); //logueo de mensaje de seguridad con logMessage
+    logMessage("Acces granted", "admin");               //logueo de mensaje de seguridad con logMessage especifico para seguridad
+    logMessage("This is an other message", OTHER);      //logueo de mensaje de otro tipo con logMessage
     }
 
     string msg; int priority;
@@ -110,7 +109,7 @@ int main(){
         string errorMsg, file;
         int line;
         cout << "Input error msg: ";
-        cin.ignore(); //limpiar el buffer
+        cin.ignore();   //limpiar el buffer
         getline(cin, errorMsg);
         cout << "Input file: ";
         cin >> file;
@@ -121,12 +120,12 @@ int main(){
         string user;
         cout << "Input user name: ";
         cin >> user;
-        cin.ignore();   //limpiar el buffer
+        cin.ignore();         //limpiar el buffer
         logMessage("Access Granted", user);
     } else if (priority > 7){ //si la prioridad es mayor a 7, tiro un error
         throw runtime_error("Invalid priority");
         return 1;
-    } else { //si no, pido el mensaje
+    } else {          //si no, pido el mensaje
         cout << "Input msg: ";
         cin.ignore(); //limpiar el buffer
         getline(cin, msg);
@@ -148,4 +147,4 @@ int main(){
         return 1;
     }
     return 0;
-}
+}   

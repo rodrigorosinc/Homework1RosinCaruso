@@ -14,9 +14,6 @@ typedef struct List{
     int size;
 } list_t;
 
-// Elegí usar shared pointers porque me permite tener un puntero al tail de la lista,
-// lo cual me facilita agregar nodos al final de la lista sin tener que recorrerla entera.
-
 shared_ptr<Node> create_node(int value){
     auto new_node = make_shared<Node>(); //creo un shared_ptr de tipo Node
     //no chequeo porque si no se puede asignar memoria, el programa tira error y termina
@@ -87,7 +84,7 @@ void erase(shared_ptr<list_t> list, int position){
     }
     
     // Busco el nodo anterior al que quiero borrar
-    auto curr_node = list->head;
+    shared_ptr<Node> curr_node = list->head;
     for (int i = 0; i < position - 1 && curr_node->next; i++){
         curr_node = curr_node->next;
     }
@@ -100,7 +97,7 @@ void erase(shared_ptr<list_t> list, int position){
 }
 
 void print_list(shared_ptr<list_t> list) {
-    auto curr_node = list->head;
+    shared_ptr<Node> curr_node = list->head;
     while (curr_node) { //mientras el nodo no sea nullptr
         cout << curr_node->value << " -> "; //imprimo el valor del nodo
         curr_node = curr_node->next;
@@ -109,16 +106,16 @@ void print_list(shared_ptr<list_t> list) {
 }
 
 int main(){
-    // Creo la lista
-    auto list = make_shared<list_t>();
+    // Creo las listas
+    shared_ptr<list_t> list = make_shared<list_t>();
     list->head = nullptr;
     list->tail = nullptr;
     list->size = 0;
     // Creo los nodos
-    int node_ammount = 3;
+    int node_ammount = 4; //esta es la cantidad de nodos a crear por cada funcion de agregar nodos
     // Ejemplo de uso de push back
     for (int i = 0; i<node_ammount; i++){
-        auto node = create_node(i);
+        shared_ptr<Node> node = create_node(i);
         cout << "--- Push back iteration: " << i << " ---" << endl;
         push_back(node, list);
         print_list(list);
@@ -126,7 +123,7 @@ int main(){
     cout << endl;
     // Ejemplo de uso de push front
     for (int i = 0; i<node_ammount; i++){
-        auto node = create_node(i);
+        shared_ptr<Node> node = create_node(i);
         cout << "--- Push front iteration: " << i << " ---" << endl;
         push_front(node, list);
         print_list(list);
@@ -135,7 +132,7 @@ int main(){
     // Ejemplo de uso de insert
     int pos_insert = 5;
     for (int i = 0; i<node_ammount; i++){
-        auto node = create_node(i);
+        shared_ptr<Node> node = create_node(i);
         cout << "--- Insert iteration: " << i << ". At pos: " << pos_insert << " ---" << endl;
         insert(node, list, pos_insert);   //inserto el nodo 
         pos_insert += 2;                  //incremento para que la proxima insercion sea en una posicion mayor, y atacar 

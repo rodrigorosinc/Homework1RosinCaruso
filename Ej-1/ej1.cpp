@@ -6,9 +6,9 @@ int** matrix(size_t n){
     int** mat = new int*[n];    //asigno la memoria para las filas
     if (!mat) return nullptr;   //si no se pudo asignar memoria, retorno nullptr
     for(size_t i = 0; i < n; i++){
-        int* row = new int[n];  //asignar memoria para las columnas
+        int* row = new int[n];  //asigno la memoria para las columnas
         if (!row){              //chequeo que se haya asignado bien la memoria
-            for (size_t k = 0; k<i; k++){ //si hubo error, la libero
+            for (size_t k = 0; k<i; k++){ //si hubo error, libero la memoria de las filas anteriores tambien
                 delete [] mat[k];
             } 
             delete mat;
