@@ -1,6 +1,6 @@
-# 📘 README
+# README
 
-## 🔧 Aclaraciones sobre la compilación
+## Aclaraciones sobre la compilación
 Cada archivo se puede compilar con la línea estándar de compilación:
 
 ```sh
