@@ -65,7 +65,7 @@ Cuando se ejecuta:
 2. **Sin `constexpr`**: La ejecución tarda más.
 3. **Con `constexpr`**: La ejecución es mucho más rápida, ya que la comparación se realiza en tiempo de compilación.
 
-> **Elección de `char*` sobre `std::string`**: Se explica en los comentarios dentro del código, pero en resumen:
+> **Elección de `char*` sobre `std::string`**: Se explica en los comentarios debajo del `main`, pero en resumen:
 > - `char*` permite el uso de `constexpr`, mientras que `std::string` no.
 > - `std::string` maneja memoria dinámica, lo que impide su evaluación en tiempo de compilación.
 > - `char*` permite optimizaciones del compilador para reducir los costos de ejecución.
