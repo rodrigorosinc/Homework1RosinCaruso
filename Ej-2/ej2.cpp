@@ -122,7 +122,7 @@ int main(){ // Ejemplo de uso:
         cin >> user;
         cin.ignore();         //limpiar el buffer
         logMessage("Access Granted", user);
-    } else if (priority > 7){ //si la prioridad es mayor a 7, tiro un error
+    } else if (priority > 8){ //si la prioridad es mayor a 8, tiro un error
         throw runtime_error("Invalid priority");
         return 1;
     } else {          //si no, pido el mensaje

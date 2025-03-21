@@ -151,7 +151,7 @@ int main(){
     for (int i = 0; i<erase_ammount; i++){
         cout << "--- Erase Iteration: " << i << " ---" << endl;
         erase(list, 3);     //borro el nodo en la posicion 3, cuando la lista tenga menos de 3 nodos, se borrara el ultimo
-        print_list(list);   //y se avisara que la posicion es mayor al tamaño de la lista.
+        print_list(list);                   //y se avisara que la posicion es mayor al tamaño de la lista.
         cout << "List size: " << list->size << endl;
     }
     return 0;
